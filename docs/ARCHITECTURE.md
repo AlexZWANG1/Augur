@@ -1,99 +1,165 @@
 # Augur Technical Architecture
 
-Augur is a Supervised Thinking system. Its architecture separates knowledge ingestion, reasoning structure, semantic layout, and visual supervision.
+Augur is a Supervised Thinking system. The current repository is an early reference projection of a broader idea: a node-first substrate where AI can turn loose human intent and raw material into replayable thinking state.
 
-## 1. Knowledge Throughput Layer
+The architecture is designed around one principle:
 
-The first layer converts raw material into structured source objects.
+> The UI should not be the source of truth. The UI should be a projection of a persistent, inspectable thinking state.
 
-Raw inputs can include reports, transcripts, web clippings, RSS items, papers, or manually collected notes. Augur does not treat these inputs as anonymous chunks. Each useful item is compiled into a source page with explicit fields:
+## 1. Human-AI Interaction Layer
 
-- facts
-- views
-- gaps
-- credibility
-- related signals
-- supporting or contradicting evidence
+Augur starts from a user focus, not from a fixed form.
 
-The point is to make knowledge maintainable across sessions. A later run should not reread the same raw material from scratch if a structured source already exists.
+The user can say what they are thinking about in natural language. The AI then reads relevant material, creates nodes, proposes relationships, records an externalized reasoning diary, and updates the current thinking state.
 
-## 2. Reasoning Schema Layer
+Core interaction verbs:
 
-The schema defines how raw observations become inspectable reasoning units.
+| Verb | Role |
+|---|---|
+| `continue` | Grow the current focus forward. |
+| `branch` | Expand one node into a new direction. |
+| `fork` | Create an isolated sandbox from a line of thought. |
+| `keep` | Preserve a node across sessions. |
+| `reframe` | Reorganize the current surface without discarding provenance. |
 
-Core object types:
+The user is not expected to manually build the graph. The user supervises the AI as it grows and reorganizes the thinking surface.
+
+## 2. Node-First Substrate
+
+Augur's deepest primitive is the node.
+
+A node can represent:
+
+- a source observation
+- a cross-source signal
+- a question
+- a diary step
+- a contradiction
+- a fork
+- a community
+- a pinned insight
+- a run or scene
+
+The current prototype uses `source` and `signal` as important typed nodes, but the architecture should not collapse into a rigid source/signal-only ontology.
+
+Minimum node contract:
+
+| Field | Meaning |
+|---|---|
+| `id` | Stable node identity. |
+| `type` | Soft type such as source, signal, question, fork, diary, contradiction. |
+| `content` | Human-readable thought object. |
+| `origin` | User, AI, source material, or prior node. |
+| `parents` | Nodes or raw materials that produced this node. |
+| `run_id` | Reasoning run where this node appeared or changed. |
+| `status` | Active, pinned, archived, challenged, or forked. |
+
+The substrate records what changed, not only what exists. Thought deltas are first-class objects.
+
+## 3. Source and Signal Path
+
+Source and signal remain useful because they provide the shortest path from raw material to judgment.
 
 | Object | Role |
 |---|---|
 | `raw` | Original material. Preserved, not rewritten. |
-| `source` | Structured interpretation of one source. |
-| `signal` | A judgment that can be supported, contradicted, updated, or killed. |
-| `evidence edge` | A source-to-signal relationship. |
-| `contradiction edge` | A tension between source, signal, or thesis. |
-| `run log` | A replayable record of how a reasoning pass evolved. |
+| `source` | AI's structured observation after reading one raw item. |
+| `signal` | Cross-source discovery that connects multiple source observations. |
+| `community` | Higher-level problem space that groups multiple signals. |
+| `run log` | Replayable record of how one reasoning pass evolved. |
 
-A signal is not a note. It must answer:
+The intended hierarchy is:
 
-- What is happening?
-- Why does it matter?
-- What evidence supports it?
-- What would change the judgment?
-- What is the deadline or validation window?
+```text
+raw -> source nodes -> signal nodes -> communities / forks / replay state
+```
 
-## 3. Skills Layer
+A signal is not a summary. It should answer:
 
-Claude Code skills act as the execution layer.
+- What cross-source pattern appeared?
+- Why is it interesting?
+- Which source observations created it?
+- What contradicts it?
+- What should be watched next?
 
-They route different requests into different reasoning modes:
+## 4. Externalized Reasoning Diary
 
-- `augur`: run a complete source-to-signal pipeline
-- `wiki-think`: compile raw material into wiki objects
-- `research`: test a thesis with evidence and valuation
-- `deep-research`: pressure-test a draft with adversarial questions
-- `hypothesis-thinking`: convert uncertainty into explicit hypotheses
-- `flex-memory`: record predictions and calibrate judgment
+Augur should not store or claim access to hidden model chain-of-thought. It should store an externalized, reviewable reasoning diary.
 
-Skills are deliberately stored as files. That makes the reasoning workflow versionable, reviewable, and reusable.
+Each run should make visible:
 
-## 4. Semantic Graph Layer
+- what the AI read
+- what it noticed
+- why that observation mattered
+- which node it created or updated
+- what relation it discovered
+- what should happen next
 
-Common graph tools usually visualize explicit links. Augur adds semantic structure below the visual layer.
+This diary is the audit trail that makes cross-session reasoning supervisable.
 
-The current graph model combines:
+## 5. Semantic Layout Layer
 
-- explicit source-to-signal links
-- community assignment
-- node type and confidence metadata
+The graph should not be arranged only by arbitrary force-directed physics.
+
+The current direction combines:
+
+- explicit node relations
+- AI-generated communities
+- source-to-signal links
+- contradiction or tension links
 - embedding-based semantic proximity
-- manually inspectable layout constraints
+- stable layout constraints for replay
 
-The design goal is that node distance should carry meaning. A nearby node should not only be visually adjacent; it should be semantically related or structurally connected.
+The goal is that spatial position carries meaning. Nearby nodes should be semantically or structurally related, not merely visually adjacent.
 
-## 5. Visual Supervision Layer
+## 6. Projection Layer
 
-The UI is built to help a human supervise thought, not just browse notes.
+Augur's UI is a projection of thinking state.
 
-Core surfaces:
+Possible projections:
 
-- **Thinking Network**: global graph of sources, signals, communities, and evidence relations
-- **Thought Feed**: chronological stream of changes across sessions
-- **Signal Index**: current state of active judgments
-- **Sandbox / Replay Mode**: a bounded reasoning run that can be stepped through
+- Thinking Network
+- Thought Feed
+- Signal Index
+- Source Reader
+- Replay Timeline
+- Mobile Scene Player
+- Fork Comparison
+- Written Memo
+- Decision Table
 
-The central interaction is not search. It is inspection: following how an AI system organized knowledge into judgment.
+The current graph UI is one projection, not the product boundary.
 
-## 6. Privacy Boundary
+Longer term, the AI should output structured scene/state JSON. A stable renderer should turn that state into graph, feed, timeline, mobile replay, or future generative views. This keeps the system flexible without asking AI to emit unsafe or brittle raw frontend code.
 
-The public repository includes the framework, schema, tools, skills, and UI shell.
+## 7. Live State and Fallback Data
+
+The preferred direction is live state:
+
+```text
+wiki objects / run logs / semantic layout -> state API -> UI projection
+```
+
+Static `data.js` can remain as a fallback snapshot for demos and offline preview, but it should not be the conceptual source of truth.
+
+## 8. Privacy Boundary
+
+The public repository includes:
+
+- framework
+- schema direction
+- UI shell
+- skills / execution protocol
+- architecture docs
+- screenshots and design assets
 
 It intentionally excludes:
 
 - private raw material
 - generated source pages
 - generated signal pages
-- live graph data
-- local credentials
+- live graph state
+- credentials
 - personal research notes
 
-This keeps the system demonstrable without exposing the private knowledge base.
-
+This boundary matters because Augur is meant to publish the system design without exposing the private knowledge base.

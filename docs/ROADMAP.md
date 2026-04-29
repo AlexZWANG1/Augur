@@ -1,129 +1,184 @@
 # Augur Roadmap
 
-Augur is currently a working prototype of a Supervised Thinking interface. The next step is to turn it from a domain-specific research workspace into a more general reasoning substrate.
+Augur is currently an early reference projection of a larger product thesis: AI should not only answer questions; it should help humans supervise, branch, and replay the way thinking develops over time.
+
+The roadmap is organized around that thesis.
 
 ## Near Term
 
-### 1. Public Demo Dataset
+### 1. Clean Public Demo State
 
-Create a small synthetic or public-domain dataset that can ship with the repository.
+Create a small public dataset that can ship with the repository.
 
 Goal:
 
-- let reviewers run the graph without private research data
-- demonstrate source -> signal -> replay
-- keep the example small enough to inspect manually
+- demonstrate raw -> source -> signal -> diary -> replay without private data
+- keep the example manually inspectable
+- show both graph view and run diary
 
-### 2. Mobile Screenshots and Replay Prototype
+### 2. Externalized Thinking Diary
 
-Add polished mobile screenshots once source image files are available.
+Make the reasoning diary a first-class surface.
 
-Target screens:
+Each run should show:
 
-- mobile thinking network
-- scene replay mode
-- signal summary card
-- bottom timeline control
+- every source the AI read
+- what it noticed in that source
+- why the observation was interesting
+- which node was created or changed
+- how the step connects to the next one
 
-These should be real product screenshots or carefully labeled design prototypes, not broken README placeholders.
+This diary should be readable in the left rail and replayable in the timeline.
 
-### 3. Cleaner Graph Data Contract
+### 3. Node Contract
 
-Split generated graph data into a documented contract:
+Document a minimal node contract that does not overfit to investment research.
+
+Required node fields:
+
+- id
+- type
+- content
+- origin
+- parents
+- run_id
+- status
+
+Source and signal remain typed nodes, but the schema should also allow question, contradiction, fork, diary step, pinned insight, and community nodes.
+
+### 4. Live State API
+
+Move the UI away from mandatory static compilation.
+
+Target flow:
 
 ```text
-nodes.json
-edges.json
-communities.json
-runs.json
-layout.json
+wiki/log state -> live state API -> Augur renderer
 ```
 
-The UI should consume this contract instead of relying on project-specific generated JavaScript.
+Static `data.js` should remain only as a fallback snapshot for demos.
 
 ## Mid Term
 
-### 4. Replayable Reasoning Runs
+### 5. Fork Runtime
 
-A run should be replayable as a sequence:
+Forks are the key interaction primitive for serious thinking.
+
+A fork should:
+
+- preserve parent context
+- isolate assumptions
+- allow a branch to grow independently
+- keep a link back to the parent line of thought
+- support comparison between competing branches
+
+This is how Augur moves from a graph viewer to an actual thinking sandbox.
+
+### 6. Scene / State JSON
+
+AI should not emit raw frontend code.
+
+Instead, it should emit structured scene/state JSON:
+
+```text
+nodes
+relations
+communities
+diary_steps
+timeline_events
+focus
+pinned_items
+layout_hints
+```
+
+The renderer can then project that state into graph, feed, replay, mobile cards, or other views.
+
+### 7. Causal Replay
+
+A run should be replayable as a causal sequence:
 
 1. read source
-2. extract observation
-3. link to existing signal
-4. create contradiction or update
-5. adjust conviction
-6. write run log
-7. render graph delta
+2. notice observation
+3. create or update node
+4. connect dots across sources
+5. form or revise signal
+6. expose contradiction
+7. update focus
+8. suggest next branch or fork
 
-The user should be able to scrub the timeline and see how the graph changed.
+The user should be able to scrub the timeline and see which nodes appeared, changed, or became important at each step.
 
-### 5. Contradiction-First Workflow
+### 8. Semantic Layout
 
-Augur should make contradictions first-class objects.
+Node position should be meaningful.
 
-Instead of hiding disagreement inside prose, the system should expose:
+The graph should combine:
 
-- source contradicts signal
-- signal conflicts with another signal
-- two signals share the same hidden assumption
-- evidence has aged past its validation window
+- embedding proximity
+- explicit relation edges
+- AI-generated communities
+- run-time causal order
+- pinned node stability
 
-This is the core difference between a knowledge graph and a supervised thinking graph.
-
-### 6. Cross-Domain Templates
-
-Investment research is the first test domain. The same architecture should support:
-
-- product strategy
-- legal case analysis
-- medical literature review
-- technical architecture research
-- policy research
-- academic literature synthesis
-
-Each domain needs its own schema vocabulary, but the same underlying pattern applies: source -> signal -> contradiction -> judgment -> replay.
+This prevents the graph from becoming either a random force layout or a rigid manually curated ontology.
 
 ## Long Term
 
-### 7. Persistent Cross-Session Reasoning
+### 9. Generalized Thinking Substrate
 
 The long-term direction is a persistent reasoning layer above ordinary memory.
 
 Ordinary memory remembers facts. Augur should preserve the structure of thought:
 
-- why a judgment existed
-- what evidence created it
+- why a node exists
+- what created it
 - what contradicted it
-- when it changed
-- what would falsify it
+- what changed it
+- which branch it belongs to
+- whether it should survive across sessions
 
 This is the real meaning of Supervised Thinking.
 
-### 8. Substrate and Projection Separation
+### 10. Projection Ecosystem
 
-Augur should eventually separate:
+The same substrate should support multiple projections:
 
-- **substrate**: canonical reasoning state
-- **projection**: graph, feed, timeline, report, mobile UI
-
-The same reasoning substrate should be viewable as:
-
-- graph
-- timeline
-- signal table
-- replay scene
-- written memo
+- research graph
+- daily thought feed
+- mobile replay
+- strategy memo
+- decision table
+- fork comparison
+- product planning canvas
+- literature review map
 
 The UI becomes a projection of thinking, not the source of truth.
 
-### 9. Human-AI Review Loop
+### 11. Human-AI Review Loop
 
 The final product direction is a review loop where the human can:
 
-- approve or reject promoted signals
-- mark contradictions as material or irrelevant
-- edit schema fields directly
-- ask the model to explain why two nodes are connected
-- force a replay from a different assumption
+- approve or reject promoted nodes
+- keep or archive insights
+- challenge AI-generated relations
+- ask why two nodes are connected
+- fork from a disputed assumption
+- force a replay from a different framing
 
-This turns AI output from a black-box answer into an inspectable, corrigible reasoning process.
+This turns AI output from a black-box answer into an inspectable, corrigible, and evolving reasoning process.
+
+### 12. Cross-Domain Templates
+
+Investment research is only the first stress test.
+
+The same architecture should support:
+
+- product strategy
+- technical architecture research
+- legal case analysis
+- medical literature review
+- policy research
+- academic synthesis
+- personal knowledge work
+
+Each domain can define its own vocabulary, but the substrate stays the same: nodes, provenance, relations, deltas, forks, and replay.
