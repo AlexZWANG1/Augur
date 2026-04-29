@@ -8,6 +8,18 @@ It is built for one specific workflow: **turn noisy source material into auditab
 
 > Alpha = my judgment - market consensus.
 
+## Project Thesis: Supervised Thinking
+
+When AI makes information output cheap, the scarce interface is no longer "more answers." The scarce interface is a better way to supervise how the model organizes thought.
+
+LLM Wiki-style systems give language models a knowledge throughput mechanism: raw material can be read, rewritten, linked, and accumulated across sessions. But for AI output to become genuinely more useful to humans, we also need a way to observe the structure of the model's reasoning: what it noticed, what it connected, what it ignored, and how a judgment changed over time.
+
+I call this **Supervised Thinking**.
+
+The goal is not to make dense thinking artificially simple. The goal is to preserve information density while using schema and UI design to make the model's reasoning legible. In this project, that means converting research into structured sources, signals, evidence links, contradiction edges, conviction changes, deadlines, and kill criteria.
+
+Augur is the visual layer for that idea. The name comes from ancient divination by reading patterns in the sky: a way to turn scattered signs into a navigable map. In this project, Augur is a replayable thinking machine built on top of an LLM Wiki. It combines source filtering, schema-driven signal compilation, and embedding-based semantic layout so the graph is not just a decorative Obsidian-style graph. The node relationships are grounded in semantic similarity, source links, and investment relevance.
+
 ## Why This Exists
 
 Most AI research workflows fail because the model is asked to reason from weak context. A generic prompt produces a generic answer. For investing, that usually means a summary of consensus.
